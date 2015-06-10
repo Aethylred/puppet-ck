@@ -1,21 +1,14 @@
-# Class: ck::params
-#
-# This class manages shared prameters and variables for the ck module
-#
-# Parameters:
-#
-# Actions:
-#
-# Requires:
-#
-# Sample Usage:
-#
-# [Remember: No empty lines between comments and class definition]
+# Manages shared parameters and variables for the ck module
 class ck::params {
 
   case $::osfamily {
-    Debian:{
-      # Do nothing
+    'Debian':{
+      $packages     = ['libck0']
+      $dev_packages = ['libck-dev']
+    }
+    'RedHat':{
+      $packages     = undef
+      $dev_packages = undef
     }
     default:{
       fail("The ck Puppet module does not support ${::osfamily} family of operating systems")

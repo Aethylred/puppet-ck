@@ -35,7 +35,8 @@ $supported_os = on_supported_os.map do |os, facts|
   case facts[:osfamily]
   when 'Debian'
     expects.merge!( {
-
+      :packages     => ['ck'],
+      :dev_packages => ['libck-dev']
     } )
   when 'RedHat'
     expects.merge!( {

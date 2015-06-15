@@ -2,6 +2,7 @@
 class ck::repository (
   $repo_url = undef
 ) inherits ck::params {
+
   if $repo_url {
     $real_repo_url = $repo_url
   } else {
@@ -10,5 +11,19 @@ class ck::repository (
 
   if ! $real_repo_url {
     fail("There is no repository URL for ck for ${::operatingsystem} ${::lsbdistrelease}")
+  } else {
+    case $::osfamily {
+      'Debian': {
+        if $::operatingsystem == 'Ubuntu'{
+          apt::ppa { $real_repo_url: }
+        } else {
+          warning('No package repository to manage!')
+        }
+      }
+      default: {
+        # do nothing
+        warning('No package repository to manage!')
+      }
+    }
   }
 }

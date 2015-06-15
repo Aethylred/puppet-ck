@@ -9,6 +9,6 @@ fixtures:
       ref:  '4.2.2'
     apt:
       repo: 'puppetlabs-apt'
-      ref:  '2.0.1'
+      ref:  '1.8.0'
   symlinks:
     ck: "#{source_dir}"

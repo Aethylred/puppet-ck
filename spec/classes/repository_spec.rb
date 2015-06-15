@@ -8,6 +8,9 @@ describe 'ck::repository', :type => :class do
     expects = os_expects[:expects]
     context "on #{os}" do
       let (:facts) { facts }
+      if facts[:osfamily] == 'Debian'
+        let (:pre_conditions) {'include apt'}
+      end
       describe 'with no parameters' do
         case facts[:osfamily]
         when 'Debian'

@@ -7,6 +7,9 @@ describe 'ck', :type => :class do
     expects = os_expects[:expects]
     context "on #{os}" do
       let (:facts) { facts }
+      if facts[:osfamily] == 'Debian'
+        let (:pre_conditions) {'include apt'}
+      end
       describe "with no parameters" do
         it { should contain_class('ck::params') }
         it { should_not contain_class('ck::repository') }

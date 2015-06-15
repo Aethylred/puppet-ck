@@ -19,15 +19,23 @@ class ck (
     'package': {
       if $manage_repos {
         class{'ck::repository':
-          repo_url => $repo_url
+          repo_url => $repo_url,
+        }
+      }
+      package{$packages:
+        ensure => $ensure,
+      }
+      if $dev_libs {
+        package{$dev_packages:
+          ensure => $ensure,
         }
       }
     }
     'source': {
-
+      # To do
     }
     'git': {
-
+      # To do
     }
     default:{
       #Does nothing

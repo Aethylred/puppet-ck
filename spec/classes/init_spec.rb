@@ -1,15 +1,26 @@
 require 'spec_helper'
 
 describe 'ck', :type => :class do
-
   $supported_os.each do | os_expects |
     os      = os_expects[:os]
     facts   = os_expects[:facts]
     expects = os_expects[:expects]
     context "on #{os}" do
       let (:facts) { facts }
-      it { should contain_class('ck::params') }
-      it { should_not contain_class('ck::repository') }
+      describe "with no parameters" do
+        it { should contain_class('ck::params') }
+        it { should_not contain_class('ck::repository') }
+        if expects[:packages]
+          Array(expects[:packages]).each do |pkg|
+            it { should contain_package(pkg).with_ensure('present')}
+          end
+        end
+        if expects[:dev_packages]
+          Array(expects[:dev_packages]).each do |pkg|
+            it { should_not contain_package(pkg) }
+          end
+        end
+      end
       describe "when managing package repositories" do
         let (:params) do
           { :manage_repos => true }
@@ -22,6 +33,16 @@ describe 'ck', :type => :class do
             ) }
           else
             it { should contain_class('ck::repository') }
+            if expects[:packages]
+              Array(expects[:packages]).each do |pkg|
+                it { should contain_package(pkg).with_ensure('present')}
+              end
+            end
+            if expects[:dev_packages]
+              Array(expects[:dev_packages]).each do |pkg|
+                it { should_not contain_package(pkg) }
+              end
+            end
           end
         else 
           it { should raise_error(Puppet::Error,

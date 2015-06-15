@@ -14,16 +14,37 @@ describe 'ck::repository', :type => :class do
       describe 'with no parameters' do
         case facts[:osfamily]
         when 'Debian'
-          if facts[:operatingsystem] == 'Ubuntu' and Gem::Version.new(facts[:lsbdistrelease]) < Gem::Version.new('14.10')
+          if facts[:operatingsystem] == 'Ubuntu' and Gem::Version.new(facts[:lsbdistrelease]) >= Gem::Version.new('14.10')
+            it { should contain_class('ck::params') }
+            it { should contain_apt__ppa('lp:ubuntu/ck')}
+          else
             it { should raise_error(Puppet::Error,
                 %r{There is no repository URL for ck for #{facts[:operatingsystem]} #{facts[:lsbdistrelease]}}
             ) }
-          else
-            it { should contain_class('ck::params') }
           end
         else 
           it { should raise_error(Puppet::Error,
               %r{There is no repository URL for ck for #{facts[:operatingsystem]} #{facts[:lsbdistrelease]}}
+          ) }
+        end
+      end
+      describe 'when provided a repository URL' do
+        let :params do
+          { :repo_url => 'ppa:someones/ppa' }
+        end
+        case facts[:osfamily]
+        when 'Debian'
+          if facts[:operatingsystem] == 'Ubuntu'
+            it { should contain_class('ck::params') }
+            it { should contain_apt__ppa('ppa:someones/ppa')}
+          else
+            it { should raise_error(Puppet::Error,
+                %r{The ck module can not configure a repository for #{facts[:operatingsystem]}}
+            ) }
+          end
+        else 
+          it { should raise_error(Puppet::Error,
+              %r{The ck module can not configure a repository for #{facts[:operatingsystem]}}
           ) }
         end
       end

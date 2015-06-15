@@ -14,15 +14,18 @@ class ck::repository (
   } else {
     case $::osfamily {
       'Debian': {
-        if $::operatingsystem == 'Ubuntu'{
-          apt::ppa { $real_repo_url: }
-        } else {
-          warning('No package repository to manage!')
+        case $::operatingsystem {
+          'Ubuntu': {
+            apt::ppa { $real_repo_url: }
+          }
+          default: {
+            fail("The ck module can not configure a repository for ${::operatingsystem}")
+          }
         }
       }
       default: {
         # do nothing
-        warning('No package repository to manage!')
+        fail("The ck module can not configure a repository for ${::operatingsystem}")
       }
     }
   }

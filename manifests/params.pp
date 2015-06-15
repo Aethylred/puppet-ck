@@ -8,14 +8,17 @@ class ck::params {
     'Debian':{
       $packages     = ['libck0']
       $dev_packages = ['libck-dev']
-      if $::operatingsystem == 'Ubuntu' {
-        if versioncmp($::lsbdistrelease, '14.10') < 0 {
-          $repo_url = undef
-        } else {
-          $repo_url = 'lp:ubuntu/ck'
+      case $::operatingsystem {
+        'Ubuntu': {
+          if versioncmp($::lsbdistrelease, '14.10') >= 0 {
+            $repo_url = 'lp:ubuntu/ck'
+          } else {
+            $repo_url = undef
+          }
         }
-      } else {
-        $repo_url   = 'lp:debian/ck'
+        default: {
+          $repo_url   = undef
+        }
       }
     }
     'RedHat':{

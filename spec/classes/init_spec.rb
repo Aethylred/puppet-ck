@@ -30,11 +30,7 @@ describe 'ck', :type => :class do
         end
         case facts[:osfamily]
         when 'Debian'
-          if facts[:operatingsystem] == 'Ubuntu' and Gem::Version.new(facts[:lsbdistrelease]) < Gem::Version.new('14.10')
-            it { should raise_error(Puppet::Error,
-                %r{There is no repository URL for ck for #{facts[:operatingsystem]} #{facts[:lsbdistrelease]}}
-            ) }
-          else
+          if facts[:operatingsystem] == 'Ubuntu' and Gem::Version.new(facts[:lsbdistrelease]) >= Gem::Version.new('14.10')
             it { should contain_class('ck::repository') }
             if expects[:packages]
               Array(expects[:packages]).each do |pkg|
@@ -46,6 +42,10 @@ describe 'ck', :type => :class do
                 it { should_not contain_package(pkg) }
               end
             end
+          else
+            it { should raise_error(Puppet::Error,
+                %r{There is no repository URL for ck for #{facts[:operatingsystem]} #{facts[:lsbdistrelease]}}
+            ) }
           end
         else 
           it { should raise_error(Puppet::Error,

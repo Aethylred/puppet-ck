@@ -53,6 +53,38 @@ describe 'ck', :type => :class do
           ) }
         end
       end
+      describe "when providing a repository URL" do
+        let (:params) do
+          {
+            :manage_repos => true,
+            :repo_url     => 'ppa:someones/ppa'
+          }
+        end
+        case facts[:osfamily]
+        when 'Debian'
+          if facts[:operatingsystem] == 'Ubuntu'
+            it { should contain_class('ck::repository').with_repo_url('ppa:someones/ppa') }
+            if expects[:packages]
+              Array(expects[:packages]).each do |pkg|
+                it { should contain_package(pkg).with_ensure('present')}
+              end
+            end
+            if expects[:dev_packages]
+              Array(expects[:dev_packages]).each do |pkg|
+                it { should_not contain_package(pkg) }
+              end
+            end
+          else
+            it { should raise_error(Puppet::Error,
+                %r{The ck module can not configure a repository for #{facts[:operatingsystem]}}
+            ) }
+          end
+        else 
+          it { should raise_error(Puppet::Error,
+              %r{The ck module can not configure a repository for #{facts[:operatingsystem]}}
+          ) }
+        end
+      end
     end
   end
   context "on and Unknown operating system" do

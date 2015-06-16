@@ -10,5 +10,8 @@ fixtures:
     apt:
       repo: 'puppetlabs-apt'
       ref:  '1.8.0'
+    vcsrepo:
+      repo: 'puppetlabs-vcsrepo'
+      ref:  '1.3.0'
   symlinks:
     ck: "#{source_dir}"

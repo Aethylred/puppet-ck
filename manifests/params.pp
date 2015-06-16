@@ -3,6 +3,7 @@ class ck::params {
 
   $src_dir = '/usr/src/ck'
   $version = '0.4.5'
+  $git_url = 'https://github.com/concurrencykit/ck.git'
 
   case $::osfamily {
     'Debian':{

@@ -13,7 +13,7 @@ class ck (
   $git_url      = undef
 ) inherits ck::params {
 
-  validate_re($provider, ['package','source','git'])
+  validate_re($provider, ['package','tar','git'])
 
   case $provider {
     'package': {
@@ -31,14 +31,31 @@ class ck (
         }
       }
     }
-    'source': {
-      # To do
-    }
-    'git': {
-      # To do
+    'tar','git': {
+      case $provider {
+        'git':{
+          class{'ck::source::git':
+            git_url => $git_url,
+            version => $version,
+            src_dir => $src_dir,
+            before  => Class['ck::source::build']
+          }
+        }
+        default:{
+          # class{'ck::source::tar':
+          #   src_url => $src_url,
+          #   src_dir => $src_dir,
+          #   version => $version,
+          #   before  => Class['ck::source::build']
+          # }
+        }
+      }
+      # class{'ck::source::build':
+      #   src_dir => $src_dir,
+      # }
     }
     default:{
-      #Does nothing
+      # Does nothing
     }
   }
 

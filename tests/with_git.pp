@@ -1,0 +1,3 @@
+class {'ck':
+  provider => 'git'
+}

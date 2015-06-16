@@ -30,7 +30,9 @@ end
 $supported_os = on_supported_os.map do |os, facts|
   os_expects = {}
   expects = {
-
+    :src_dir => '/usr/src/ck',
+    :version => '0.4.5',
+    :git_url => 'https://github.com/concurrencykit/ck.git'
   }
   case facts[:osfamily]
   when 'Debian'

@@ -42,12 +42,12 @@ class ck (
           }
         }
         default:{
-          # class{'ck::source::tar':
-          #   src_url => $src_url,
-          #   src_dir => $src_dir,
-          #   version => $version,
-          #   before  => Class['ck::source::build']
-          # }
+          class{'ck::source::tar':
+            src_url => $src_url,
+            src_dir => $src_dir,
+            version => $version,
+            before  => Class['ck::source::build']
+          }
         }
       }
       # class{'ck::source::build':

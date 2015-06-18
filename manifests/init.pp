@@ -10,7 +10,9 @@ class ck (
   $src_dir      = $::ck::params::src_dir,
   $repo_url     = undef,
   $src_url      = undef,
-  $git_url      = undef
+  $git_url      = undef,
+  $build        = false,
+  $regressions  = false
 ) inherits ck::params {
 
   validate_re($provider, ['package','tar','git'])
@@ -38,7 +40,7 @@ class ck (
             git_url => $git_url,
             version => $version,
             src_dir => $src_dir,
-            before  => Class['ck::source::build']
+            before  => Anchor['before_build']
           }
         }
         default:{
@@ -46,13 +48,18 @@ class ck (
             src_url => $src_url,
             src_dir => $src_dir,
             version => $version,
-            before  => Class['ck::source::build']
+            before  => Anchor['before_build']
           }
         }
       }
-      # class{'ck::source::build':
-      #   src_dir => $src_dir,
-      # }
+      anchor{'before_build': }
+      if $build {
+        class{'ck::source::build':
+          src_dir     => $src_dir,
+          regressions => $regressions,
+          require     => Anchor['before_build']
+        }
+      }
     }
     default:{
       # Does nothing

@@ -13,6 +13,9 @@ describe 'ck', :type => :class do
       describe "with no parameters" do
         it { should contain_class('ck::params') }
         it { should_not contain_class('ck::repository') }
+        it { should_not contain_class('ck::source::build') }
+        it { should_not contain_class('ck::source::git') }
+        it { should_not contain_class('ck::source::tar') }
         if expects[:packages]
           Array(expects[:packages]).each do |pkg|
             it { should contain_package(pkg).with_ensure('present')}
@@ -32,6 +35,9 @@ describe 'ck', :type => :class do
         when 'Debian'
           if facts[:operatingsystem] == 'Ubuntu' and Gem::Version.new(facts[:lsbdistrelease]) >= Gem::Version.new('14.10')
             it { should contain_class('ck::repository') }
+            it { should_not contain_class('ck::source::build') }
+            it { should_not contain_class('ck::source::git') }
+            it { should_not contain_class('ck::source::tar') }
             if expects[:packages]
               Array(expects[:packages]).each do |pkg|
                 it { should contain_package(pkg).with_ensure('present')}
@@ -84,6 +90,113 @@ describe 'ck', :type => :class do
               %r{The ck module can not configure a repository for #{facts[:operatingsystem]}}
           ) }
         end
+      end
+      describe "when trying to build without source" do
+        let (:params) do
+          {
+            :provider => 'package',
+            :build    => true
+          }
+        end
+        it { should_not contain_class('ck::source::build') }
+        it { should_not contain_class('ck::source::git') }
+        it { should_not contain_class('ck::source::tar') }
+      end
+      describe "when trying to build with git" do
+        let (:params) do
+          {
+            :provider => 'git',
+            :build    => true
+          }
+        end
+        it { should contain_class('ck::source::build').with(
+          'src_dir'     => '/usr/src/ck',
+          'regressions' => false
+        ) }
+        it { should contain_class('ck::source::git').with(
+          'git_url' => expects[:git_url],
+          'version' => '0.4.5',
+          'src_dir' => '/usr/src/ck',
+          'before'  => 'Anchor[before_build]'
+        ) }
+        it { should_not contain_class('ck::source::tar') }
+      end
+      describe "when customising build with git" do
+        let (:params) do
+          {
+            :provider => 'git',
+            :build    => true,
+            :git_url => 'git@git.org/ck.git',
+            :version => '3.0.0',
+            :src_dir => '/src/ck',
+          }
+        end
+        it { should contain_class('ck::source::build').with(
+          'src_dir'     => '/src/ck',
+          'regressions' => false
+        ) }
+        it { should contain_class('ck::source::git').with(
+          'git_url' => 'git@git.org/ck.git',
+          'version' => '3.0.0',
+          'src_dir' => '/src/ck',
+          'before'  => 'Anchor[before_build]'
+        ) }
+        it { should_not contain_class('ck::source::tar') }
+      end
+      describe "when trying to build with source" do
+        let (:params) do
+          {
+            :provider => 'tar',
+            :build    => true
+          }
+        end
+        it { should contain_class('ck::source::build').with(
+          'src_dir'     => '/usr/src/ck',
+          'regressions' => false
+        ) }
+        it { should_not contain_class('ck::source::git') }
+        it { should contain_class('ck::source::tar').with(
+          'src_url' => nil,
+          'src_dir' => '/usr/src/ck',
+          'version' => '0.4.5',
+          'before'  => 'Anchor[before_build]'
+        ) }
+      end
+      describe "when customising build with source" do
+        let (:params) do
+          {
+            :provider => 'tar',
+            :build    => true,
+            :src_url  => 'https://somewhere.org/ck.tar.gz',
+            :version  => '3.0.0',
+            :src_dir  => '/src/ck'
+          }
+        end
+        it { should contain_class('ck::source::build').with(
+          'src_dir'     => '/src/ck',
+          'regressions' => false
+        ) }
+        it { should_not contain_class('ck::source::git') }
+        it { should contain_class('ck::source::tar').with(
+          'src_url' => 'https://somewhere.org/ck.tar.gz',
+          'src_dir' => '/src/ck',
+          'version' => '3.0.0',
+          'before'  => 'Anchor[before_build]'
+        ) }
+      end
+      describe "when building regressions" do
+        let (:params) do
+          {
+            :provider    => 'tar',
+            :build       => true,
+            :regressions => true
+          }
+        end
+        it { should contain_class('ck::source::build').with(
+          'regressions' => true
+        ) }
+        it { should_not contain_class('ck::source::git') }
+        it { should contain_class('ck::source::tar') }
       end
     end
   end

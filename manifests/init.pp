@@ -59,6 +59,9 @@ class ck (
           regressions => $regressions,
           require     => Anchor['before_build']
         }
+        class{'ck::source::install':
+          src_dir => $src_dir
+        }
       }
     }
     default:{

@@ -14,6 +14,7 @@ describe 'ck', :type => :class do
         it { should contain_class('ck::params') }
         it { should_not contain_class('ck::repository') }
         it { should_not contain_class('ck::source::build') }
+        it { should_not contain_class('ck::source::install') }
         it { should_not contain_class('ck::source::git') }
         it { should_not contain_class('ck::source::tar') }
         if expects[:packages]
@@ -36,6 +37,7 @@ describe 'ck', :type => :class do
           if facts[:operatingsystem] == 'Ubuntu' and Gem::Version.new(facts[:lsbdistrelease]) >= Gem::Version.new('14.10')
             it { should contain_class('ck::repository') }
             it { should_not contain_class('ck::source::build') }
+            it { should_not contain_class('ck::source::install') }
             it { should_not contain_class('ck::source::git') }
             it { should_not contain_class('ck::source::tar') }
             if expects[:packages]
@@ -99,6 +101,7 @@ describe 'ck', :type => :class do
           }
         end
         it { should_not contain_class('ck::source::build') }
+        it { should_not contain_class('ck::source::install') }
         it { should_not contain_class('ck::source::git') }
         it { should_not contain_class('ck::source::tar') }
       end
@@ -112,6 +115,9 @@ describe 'ck', :type => :class do
         it { should contain_class('ck::source::build').with(
           'src_dir'     => '/usr/src/ck',
           'regressions' => false
+        ) }
+        it { should contain_class('ck::source::install').with(
+          'src_dir'     => '/usr/src/ck'
         ) }
         it { should contain_class('ck::source::git').with(
           'git_url' => expects[:git_url],
@@ -135,6 +141,9 @@ describe 'ck', :type => :class do
           'src_dir'     => '/src/ck',
           'regressions' => false
         ) }
+        it { should contain_class('ck::source::install').with(
+          'src_dir'     => '/src/ck'
+        ) }
         it { should contain_class('ck::source::git').with(
           'git_url' => 'git@git.org/ck.git',
           'version' => '3.0.0',
@@ -153,6 +162,9 @@ describe 'ck', :type => :class do
         it { should contain_class('ck::source::build').with(
           'src_dir'     => '/usr/src/ck',
           'regressions' => false
+        ) }
+        it { should contain_class('ck::source::install').with(
+          'src_dir'     => '/usr/src/ck'
         ) }
         it { should_not contain_class('ck::source::git') }
         it { should contain_class('ck::source::tar').with(
@@ -175,6 +187,9 @@ describe 'ck', :type => :class do
         it { should contain_class('ck::source::build').with(
           'src_dir'     => '/src/ck',
           'regressions' => false
+        ) }
+        it { should contain_class('ck::source::install').with(
+          'src_dir'     => '/src/ck'
         ) }
         it { should_not contain_class('ck::source::git') }
         it { should contain_class('ck::source::tar').with(

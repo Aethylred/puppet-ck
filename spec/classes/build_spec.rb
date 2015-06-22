@@ -10,8 +10,9 @@ describe 'ck::source::build', :type => :class do
       describe "with no parameters" do
         it { should contain_class('ck::params') }
         it { should contain_exec('configure_ck_src').with(
-          'command' => 'configure',
+          'command' => '/usr/src/ck/configure',
           'cwd'     => '/usr/src/ck',
+          'creates' => '/usr/src/ck/Makefile',
           'path'    => ['/usr/bin','/bin']
         ) }
         it { should_not contain_exec('make_regressions_ck_src') }
@@ -28,8 +29,9 @@ describe 'ck::source::build', :type => :class do
         end
         it { should contain_class('ck::params') }
         it { should contain_exec('configure_ck_src').with(
-          'command' => 'configure',
+          'command' => '/usr/src/ck/configure',
           'cwd'     => '/usr/src/ck',
+          'creates' => '/usr/src/ck/Makefile',
           'path'    => ['/usr/bin','/bin']
         ) }
         it { should contain_exec('make_regressions_ck_src').with(
@@ -54,8 +56,9 @@ describe 'ck::source::build', :type => :class do
         end
         it { should contain_class('ck::params') }
         it { should contain_exec('configure_ck_src').with(
-          'command' => 'configure',
+          'command' => '/src/concurrencykit/configure',
           'cwd'     => '/src/concurrencykit',
+          'creates' => '/src/concurrencykit/Makefile',
           'path'    => ['/usr/bin','/bin']
         ) }
         it { should contain_exec('make_regressions_ck_src').with(

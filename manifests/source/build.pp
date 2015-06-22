@@ -7,8 +7,9 @@ class ck::source::build (
   require gcc
 
   exec{'configure_ck_src':
-    command => 'configure',
+    command => "${src_dir}/configure",
     cwd     => $src_dir,
+    creates => "${src_dir}/Makefile",
     path    => ['/usr/bin','/bin']
   }
 
@@ -16,6 +17,7 @@ class ck::source::build (
     exec{'make_regressions_ck_src':
       command => 'make regressions',
       cwd     => $src_dir,
+      creates => "${src_dir}/regressions/ck_hp/benchmark/stack_latency",
       path    => ['/usr/bin','/bin'],
       before  => Exec['make_ck_src'],
       require => Exec['configure_ck_src']
@@ -25,6 +27,7 @@ class ck::source::build (
   exec{'make_ck_src':
     command => 'make',
     cwd     => $src_dir,
+    creates => "${src_dir}/src/libck.so",
     path    => ['/usr/bin','/bin'],
     require => Exec['configure_ck_src']
   }

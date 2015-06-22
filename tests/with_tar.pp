@@ -1,7 +1,7 @@
 include gcc
 
 class {'ck':
-  provider => 'git',
+  provider => 'tar',
   build    => true,
   install  => true
 }

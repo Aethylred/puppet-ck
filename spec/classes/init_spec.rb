@@ -11,21 +11,27 @@ describe 'ck', :type => :class do
         let (:pre_conditions) {'include apt'}
       end
       describe "with no parameters" do
-        it { should contain_class('ck::params') }
-        it { should_not contain_class('ck::repository') }
-        it { should_not contain_class('ck::source::build') }
-        it { should_not contain_class('ck::source::install') }
-        it { should_not contain_class('ck::source::git') }
-        it { should_not contain_class('ck::source::tar') }
         if expects[:packages]
-          Array(expects[:packages]).each do |pkg|
-            it { should contain_package(pkg).with_ensure('present')}
+          it { should contain_class('ck::params') }
+          it { should_not contain_class('ck::repository') }
+          it { should_not contain_class('ck::source::build') }
+          it { should_not contain_class('ck::source::install') }
+          it { should_not contain_class('ck::source::git') }
+          it { should_not contain_class('ck::source::tar') }
+          if expects[:packages]
+            Array(expects[:packages]).each do |pkg|
+              it { should contain_package(pkg).with_ensure('present')}
+            end
           end
-        end
-        if expects[:dev_packages]
-          Array(expects[:dev_packages]).each do |pkg|
-            it { should_not contain_package(pkg) }
+          if expects[:dev_packages]
+            Array(expects[:dev_packages]).each do |pkg|
+              it { should_not contain_package(pkg) }
+            end
           end
+        else
+          it { should raise_error(Puppet::Error,
+            %r{ck package names must be provided for #{facts[:operatingsystem]}}
+          ) }
         end
       end
       describe "when managing package repositories" do
@@ -50,10 +56,6 @@ describe 'ck', :type => :class do
                 it { should_not contain_package(pkg) }
               end
             end
-          else
-            it { should raise_error(Puppet::Error,
-                %r{There is no repository URL for ck for #{facts[:operatingsystem]} #{facts[:lsbdistrelease]}}
-            ) }
           end
         else 
           it { should raise_error(Puppet::Error,
@@ -100,10 +102,16 @@ describe 'ck', :type => :class do
             :build    => true
           }
         end
-        it { should_not contain_class('ck::source::build') }
-        it { should_not contain_class('ck::source::install') }
-        it { should_not contain_class('ck::source::git') }
-        it { should_not contain_class('ck::source::tar') }
+        if expects[:packages]
+          it { should_not contain_class('ck::source::build') }
+          it { should_not contain_class('ck::source::install') }
+          it { should_not contain_class('ck::source::git') }
+          it { should_not contain_class('ck::source::tar') }
+        else
+          it { should raise_error(Puppet::Error,
+            %r{ck package names must be provided for #{facts[:operatingsystem]}}
+          ) }
+        end
       end
       describe "when trying to build with git" do
         let (:params) do

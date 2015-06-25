@@ -14,6 +14,6 @@ This module has been developed for the use with Open Source Puppet (Apache 2.0 l
 
 # Licensing
 
-This file is part of the postfix Puppet module.
+This file is part of the ck Puppet module.
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)

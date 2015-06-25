@@ -24,13 +24,21 @@ class ck (
           repo_url => $repo_url,
         }
       }
-      package{$packages:
-        ensure => $ensure,
-      }
-      if $dev_libs {
-        package{$dev_packages:
+      if $packages {
+        package{$packages:
           ensure => $ensure,
         }
+      } else {
+        fail("ck package names must be provided for ${::operatingsystem}")
+      }
+      if $dev_libs {
+        if $dev_packages{
+          package{$dev_packages:
+            ensure => $ensure,
+          }
+          } else {
+            fail("ck development package names must be provided for ${::operatingsystem}")
+          }
       }
     }
     'tar','git': {

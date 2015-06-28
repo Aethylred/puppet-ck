@@ -2,6 +2,12 @@
 
 This Puppet module installs the [Concurrency Kit](http://concurrencykit.org/) which provides concurrency primitives, safe memory reclamation mechanisms and non-blocking data structures for the research, design and implementation of high performance concurrent systems. This module can install from packages, or build and install from a git repository or a source tar archive.
 
+# Dependencies
+
+* [puppetlabs-gcc](https://forge.puppetlabs.com/puppetlabs/gcc) module if building from source code.
+* [puppetlabs-vcsrepo](https://forge.puppetlabs.com/puppetlabs/vcsrepo) module if downloading source from a git repository
+* [puppetlabs-stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
+
 # Classes
 
 ## Base Class
